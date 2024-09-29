@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - TrendAura</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff523b;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .product-summary {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .product-item img {
+            width: 80px;
+            height: auto;
+            border-radius: 4px;
+            margin-right: 20px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-details h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .product-price {
+            color: #ff523b;
+            font-weight: bold;
+        }
+
+        .checkout-button, .cancel-button {
+            display: block;
+            background-color: #ff523b;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .checkout-button:hover {
+            background-color: #e04131;
+        }
+
+        .cancel-button {
+            background-color: #ccc;
+        }
+
+        .cancel-button:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Checkout</h1>
+
+        <div class="form-group">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Shipping Address</label>
+            <input type="text" id="address" placeholder="Enter your shipping address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" placeholder="Enter your city" required>
+        </div>
+
+        <div class="form-group">
+            <label for="state">State</label>
+            <select id="state" required>
+                <option value="">Select State</option>
+                <!-- Add states here -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="zip">Zip Code</label>
+            <input type="text" id="zip" placeholder="Enter your zip code" required>
+        </div>
+
+        <div class="form-group">
+            <label for="payment-method">Payment Method</label>
+            <select id="payment-method" required>
+                <option value="">Select Payment Method</option>
+                <!-- Add payment options here -->
+            </select>
+        </div>
+
+        <div class="product-summary">
+            <h2>Product Summary</h2>
+            <div id="product-items"></div>
+        </div>
+
+        <button class="checkout-button" onclick="submitOrder()">Place Order</button>
+        <button class="cancel-button" onclick="cancelOrder()">Cancel Order</button>
+    </div>
+
+    <script>
+        function loadProductSummary() {
+            const productContainer = document.getElementById('product-items');
+            productContainer.innerHTML = '';
+
+            // Get only the selected item(s) from local storage
+            const selectedItems = JSON.parse(localStorage.getItem('checkoutItem')) || [];
+
+            if (selectedItems.length === 0) {
+                productContainer.innerHTML = '<p>No items in your order.</p>';
+                return;
+            }
+
+            selectedItems.forEach(item => {
+                productContainer.innerHTML += `
+                    <div class="product-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="product-details">
+                            <h2>${item.name}</h2>
+                            <p class="product-price">$${item.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function submitOrder() {
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zip = document.getElementById('zip').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            if (!fullName || !email || !address || !city || !state || !zip || !paymentMethod) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Order submission logic here
+
+            alert('Order placed successfully!');
+
+            // Clear cart after order
+            localStorage.removeItem('cart');
+            window.location.href = 'account.html'; // Redirect to the account page
+        }
+
+        function cancelOrder() {
+            localStorage.removeItem('cart');
+            alert('All items have been removed from your cart and the order has been cancelled.');
+            window.location.href = 'cart.html'; // Redirect to cart page
+        }
+
+        // Load product summary on page load
+        window.onload = loadProductSummary;
+    </script>
+</body>
+</html>
